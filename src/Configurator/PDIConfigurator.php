@@ -153,8 +153,8 @@ class PDIConfigurator implements ConfiguratorInterface
                 ...$this->parameters,
             ]);
 
-            if ($this->tempDir) {
-                $containerBuilder->enableCompilation($this->tempDir);
+            if ($tempDir = $this->getParameters()["tempDir"]) {
+                $containerBuilder->enableCompilation($tempDir);
             }
 
             foreach ($this->onBuild as $callable) {
