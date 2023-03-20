@@ -4,20 +4,18 @@ declare(strict_types=1);
 
 namespace Liliana\Setup\Bridges\Slim\Configurator;
 
+use DI\Bridge\Slim\Bridge;
 use Liliana\Setup\Exception\ConfiguratorException;
 use Liliana\Setup\Extra\Configurator\ExtraConfigurator;
 use Psr\Container\ContainerInterface;
 use Slim\App;
-use Slim\Factory\AppFactory;
 
 class SlimConfigurator extends ExtraConfigurator
 {
     public function addSlimDefinition(array $bootstraps = []): static
     {
         return $this->addServiceDefinition(App::class, function (ContainerInterface $container) use ($bootstraps) {
-            AppFactory::setContainer($container);
-
-            $app = AppFactory::create();
+            $app = Bridge::create($container);
 
             foreach ($bootstraps as $bootstrap) {
                 $callable = null;
