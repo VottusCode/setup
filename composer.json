@@ -1,0 +1,32 @@
+{
+    "name": "liliana/setup",
+    "description": "Simplify setup",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mia Lilian Morningstar",
+            "email": "morningstar@procorp.cz"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^8.2",
+        "psr/container": "^2.0"
+    },
+    "require-dev": {
+        "php-di/php-di": "^7.0",
+        "symfony/error-handler": "^6.2",
+        "slim/slim": "^4.11"
+    },
+    "autoload": {
+        "psr-4": {
+            "Liliana\\Setup\\": "src/"
+        }
+    },
+    "conflict": {
+        "php-di/php-di": "<6.4",
+        "symfony/error-handler": "<6.2",
+        "slim/slim": "<4.11"
+    }
+}

@@ -1,0 +1,7 @@
+# Package manages
+vendor
+node_modules
+
+# Editors
+.idea
+.vscode
