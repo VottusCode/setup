@@ -28,4 +28,5 @@ class BaseEnvironment implements EnvironmentInterface
     {
         return strtolower($this->get()) === strtolower($value);
     }
+
 }

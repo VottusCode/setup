@@ -52,4 +52,12 @@ class Helper
         return $matches;
     }
 
+    public static function objectExists(string $identifier): bool
+    {
+        return class_exists($identifier)
+            || interface_exists($identifier)
+            || trait_exists($identifier)
+            || enum_exists($identifier);
+    }
+
 }

@@ -148,10 +148,12 @@ class PDIConfigurator implements ConfiguratorInterface
         try {
             $containerBuilder = new ContainerBuilder();
 
-            $containerBuilder->addDefinitions([
+            $definitions = [
                 ...$this->definitions,
                 ...$this->parameters,
-            ]);
+            ];
+
+            $containerBuilder->addDefinitions($definitions);
 
             if ($tempDir = $this->getParameters()["tempDir"]) {
                 $containerBuilder->enableCompilation($tempDir);

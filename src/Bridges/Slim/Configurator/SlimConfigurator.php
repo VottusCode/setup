@@ -36,13 +36,11 @@ class SlimConfigurator extends ExtraConfigurator
                     throw new ConfiguratorException("Unknown bootstrap of type '$type' found");
                 }
 
-                $callable($app);
+                $callable($app, $container);
             }
 
             return $app;
         });
     }
-
-
 
 }

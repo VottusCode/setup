@@ -31,12 +31,13 @@ class ExtraConfigurator extends BasePDIConfigurator implements DebugModeReader, 
         array $macroMappings = []
     )
     {
+        parent::__construct($tempDir);
+
         $this->macroMappings = [
-            Macro::Include->value => [$this, 'macroInclude']
-        ] + $macroMappings;
+                Macro::Include->value => [$this, 'macroInclude']
+            ] + $macroMappings;
 
         $this->setDebugMode($debugMode);
-        parent::__construct($tempDir);
     }
 
     public static function include(string $content): MacroData
@@ -76,22 +77,33 @@ class ExtraConfigurator extends BasePDIConfigurator implements DebugModeReader, 
                 if (in_array($key, $this->reservedKeys)) {
                     throw new ConfiguratorException("Attempted to use reserved key '$key'");
                 }
-            } elseif (class_exists($value)) {
-                // Allow classes to be registered in sequential arrays, uses the autowire() helper
-                // eg. [AutowiredService::class] -> [AutowiredService::class => autowire(AutowiredService::class)]
-                unset($definitions[$key]);
-                $definitions[$value] = autowire($value);
+
+                if ($kind === DefinitionKind::ServiceDefinition && !Helper::objectExists($key)) {
+                    throw new ConfiguratorException("Attempted to add '$key' as a service definition");
+                }
             }
 
             // Macros defined with strings
             // eg. include::/path/to/file.php
             if (is_string($value)) {
                 $match = Helper::match("/(\w+)::(.*)/", $value);
+                var_dump($match);
 
                 // Non-macro strings are considered parameters and therefore not allowed
                 // to be defined as service definitions.
-                if (!$match && $kind === DefinitionKind::ServiceDefinition) {
-                    throw new ConfiguratorException("Attempted to define parameter '$key' with service definitions");
+                if (!$match) {
+                    if ($kind === DefinitionKind::ServiceDefinition) {
+                        // Allow classes to be registered in sequential arrays, uses the autowire() helper
+                        // eg. [AutowiredService::class] -> [AutowiredService::class => autowire(AutowiredService::class)]
+                        if (is_int($key) && class_exists($value)) {
+                            unset($definitions[$key]);
+                            $definitions[$value] = autowire($value);
+
+                            continue;
+                        }
+                    }
+
+                    continue;
                 }
 
                 [, $type, $content] = $match;
@@ -108,6 +120,12 @@ class ExtraConfigurator extends BasePDIConfigurator implements DebugModeReader, 
                 $this->processMacros($definitions, $kind, $key, $value);
                 continue;
             }
+
+            // Non-macro sequential array entry that is not a service definition is not allowed
+            if (is_int($key)) {
+                throw new ConfiguratorException("Dangling sequential array entry '$key' => '$value'");
+            }
+
         }
 
         return $definitions;
@@ -144,4 +162,5 @@ class ExtraConfigurator extends BasePDIConfigurator implements DebugModeReader, 
             $definitions[$key] = $resolved;
         }
     }
+
 }

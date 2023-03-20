@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Liliana\Setup\Exception;
 
-class ConfiguratorException extends \Exception
+use Exception;
+
+class ConfiguratorException extends Exception
 {
 
 }

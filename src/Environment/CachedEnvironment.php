@@ -9,7 +9,7 @@ namespace Liliana\Setup\Environment;
  */
 class CachedEnvironment extends BaseEnvironment
 {
-    private string $_env;
+    private ?string $_env = null;
 
     public function get(): ?string
     {
