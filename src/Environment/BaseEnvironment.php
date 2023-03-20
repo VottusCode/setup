@@ -23,4 +23,9 @@ class BaseEnvironment implements EnvironmentInterface
 
         return $env;
     }
+
+    public function is(string $value): bool
+    {
+        return strtolower($this->get()) === strtolower($value);
+    }
 }
