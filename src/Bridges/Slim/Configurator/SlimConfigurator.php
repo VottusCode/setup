@@ -14,10 +14,11 @@ class SlimConfigurator extends ExtraConfigurator
 {
     public function addSlimDefinition(array $bootstraps = []): static
     {
-        return $this->addServiceDefinition(App::class, function (ContainerInterface $container) use ($bootstraps) {
-            $app = Bridge::create($container);
+        $this->addParameter("bootstraps", $bootstraps);
+        $this->addServiceDefinition(App::class, function (ContainerInterface $di)  {
+            $app = Bridge::create($di);
 
-            foreach ($bootstraps as $bootstrap) {
+            foreach ($di->get("bootstraps") as $bootstrap) {
                 $callable = null;
 
                 if (is_string($bootstrap) && is_file($bootstrap)) {
@@ -34,11 +35,13 @@ class SlimConfigurator extends ExtraConfigurator
                     throw new ConfiguratorException("Unknown bootstrap of type '$type' found");
                 }
 
-                $callable($app, $container);
+                $callable($app, $di);
             }
 
             return $app;
         });
+
+        return $this;
     }
 
 }
