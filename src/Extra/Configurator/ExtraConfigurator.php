@@ -87,7 +87,6 @@ class ExtraConfigurator extends BasePDIConfigurator implements DebugModeReader, 
             // eg. include::/path/to/file.php
             if (is_string($value)) {
                 $match = Helper::match("/(\w+)::(.*)/", $value);
-                var_dump($match);
 
                 // Non-macro strings are considered parameters and therefore not allowed
                 // to be defined as service definitions.
