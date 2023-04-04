@@ -15,11 +15,11 @@ class SlimConfigurator extends ExtraConfigurator
     public function addSlimDefinition(array $bootstraps = [], App|callable|null $app = null): static
     {
         $this->addParameter("bootstraps", $bootstraps);
-        $this->addParameter("_app", $app);
-        $this->addServiceDefinition(App::class, function (ContainerInterface $di)  {
-            $app = $di->get("_app");
-            $app = $app ? is_callable($app) ? $app($di) : $app : Bridge::create($di);
+        $this->addParameter("_app", $app ?? Bridge::create(...));
 
+        $this->addServiceDefinition(App::class, function (ContainerInterface $di) {
+            $app = $di->get("_app");
+            
             foreach ($di->get("bootstraps") as $bootstrap) {
                 $callable = null;
 
