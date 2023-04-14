@@ -17,7 +17,9 @@ class BaseEnvironment implements EnvironmentInterface
         $env = getenv($this->key);
 
         if (!is_string($env)) {
-            trigger_error("Non-string value returned from getenv(" . json_encode($this->key) . "), got: " . json_encode($env));
+            if ($env !== false) {
+                trigger_error("Non-string value returned from getenv(" . json_encode($this->key) . "), got: " . json_encode($env));
+            }
             return null;
         }
 
